@@ -18,7 +18,10 @@ app.use(bodyParser.json())
 //////////////////////////////////////////////////////////////////////////////
 // app.use('/users', require('./routes/users'))
 // app.use('/auth', require('./routes/auth'))
-
+app.get('/healthcheck',function(req, res){
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify({ Status: "OK" }));
+});
 
 //////////////////////////////////////////////////////////////////////////////
 // Default Route
