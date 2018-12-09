@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "latest": "knex migrate:latest",
     "rollback": "knex migrate:rollback",
-    "seed": "knex seed:run"
+    "seed": "knex seed:run",
+    "format": "prettier --write \"src/**/*.{js,jsx,css,json}\" "
   },
   "repository": {
     "type": "git",
@@ -33,5 +34,8 @@
     "morgan": "^1.9.1",
     "nodemon": "^1.18.7",
     "pg": "^7.7.1"
+  },
+  "devDependencies": {
+    "prettier": "1.15.3"
   }
 }
