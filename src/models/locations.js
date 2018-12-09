@@ -1,5 +1,8 @@
 const axios = require("axios");
 const zipcodes = require('zipcodes');
+const {codes} = require('iso-country-codes');
+
+console.log(codes.find(code => code.alpha2 === 'US').numeric)
 
 
 const getDistance = (a, b) => {
@@ -75,6 +78,54 @@ async function googleReviews(placeId){
     return {rating, reviews}
 }
 
+async function tipEtiquetteCall() {
+    const tipEtiquette = [
+        {
+            "tipEtiquetteGuideId": 140,
+            "isoCurrencyCode": "USD",
+            "langCde": "en",
+            "tipDescription": "15% - 20%",
+            "defaultTipAmount": "20",
+            "countryName": "United States",
+            "countryIsoNumber": 310,
+            "currencyDesc": "US Dollar",
+            "tipCategoryId": 3,
+            "tipCategoryDesc": "Taxi",
+            "tipClassificationId": 2,
+            "tipClassificationDesc": "Percent"
+        },
+        {
+            "tipEtiquetteGuideId": 432,
+            "isoCurrencyCode": "USD",
+            "langCde": "en",
+            "tipDescription": "1 - 2 USD per bag",
+            "defaultTipAmount": "2",
+            "countryName": "United States",
+            "countryIsoNumber": 310,
+            "currencyDesc": "US Dollar",
+            "tipCategoryId": 1,
+            "tipCategoryDesc": "Hotel Porter",
+            "tipClassificationId": 1,
+            "tipClassificationDesc": "Flat Rate"
+        },
+        {
+            "tipEtiquetteGuideId": 286,
+            "isoCurrencyCode": "USD",
+            "langCde": "en",
+            "tipDescription": "15% - 20%",
+            "defaultTipAmount": "20",
+            "countryName": "United States",
+            "countryIsoNumber": 310,
+            "currencyDesc": "US Dollar",
+            "tipCategoryId": 2,
+            "tipCategoryDesc": "Restaurant",
+            "tipClassificationId": 2,
+            "tipClassificationDesc": "Percent"
+        }
+    ]
+    return tipEtiquette
+}
+
 async function getOneLocation(name, address1, city, point, zip_code) {
     const yelpBusinessId = await getYelpBusinessId(name, address1, city, point, zip_code);
     const yelpRating = await getYelpData(yelpBusinessId);
@@ -82,7 +133,10 @@ async function getOneLocation(name, address1, city, point, zip_code) {
 
     const googleId = await googleBusinessId(name)
     const {rating, reviews} = await googleReviews(googleId)
-    return { yelpBusinessId, yelpRating, yelpReviews, googleRating: rating, googleReviews: reviews}
+
+    const tipEtiquette = await tipEtiquetteCall()
+
+    return { yelpBusinessId, yelpRating, yelpReviews, googleRating: rating, googleReviews: reviews, tipEtiquette}
 }
 
 async function getAllLocations(lat, long) {
