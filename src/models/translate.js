@@ -68,7 +68,7 @@ function getLanguageList() {
     "Haitian Creole": "ht",
     Hausa: "ha",
     Hawaiian: "haw",
-    Hebrew: "he**",
+    Hebrew: "he",
     Hindi: "hi",
     Hmong: "hmn",
     Hungarian: "hu",
