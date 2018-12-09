@@ -1,5 +1,4 @@
 const knex = require('../../db')
-// const bcrypt = require('bcrypt-as-promised')
 
 function getOneUser(user_id) {
   return knex("users")
