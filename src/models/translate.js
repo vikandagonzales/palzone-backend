@@ -2,14 +2,13 @@ const { Translate } = require("@google-cloud/translate");
 const userModel = require("./users");
 const { PALZONE_GOOGLE_PROJECT_ID } = process.env;
 
-async function createTranslate(userId, body) {
-  let user = await userModel.getOneUser(userId);
+async function createTranslate(body) {
   const projectId = PALZONE_GOOGLE_PROJECT_ID;
   const translate = new Translate({
     projectId: projectId
   });
 
-  let target = user.preferred_language;
+  let target = body.language;
   // let target = 'he';
 
   let text = body.text;
