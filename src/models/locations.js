@@ -1,5 +1,6 @@
-const knex = require("../../db");
 const axios = require("axios");
+const zipcodes = require('zipcodes');
+
 
 const getDistance = (a, b) => {
   if (!(a && b)) return 0;
@@ -17,16 +18,22 @@ const getDistance = (a, b) => {
   return d;
 };
 
-async function getYelpBusinessId(name, address1, city, point) {
+async function getYelpBusinessId(name, address1, city, point, zip_code) {
+    const zipcodeMetadata = zipcodes.lookup(zip_code);
+    const {state, country} = zipcodeMetadata;
+
+    const [lat, long] = JSON.parse(point);
+    console.log(lat, long);
+
     const result = await axios.get(
-        "https://api.yelp.com/v3/businesses/matches?latitude=34.0246769&longitude=-118.4110162&name=Kogi Taqueria&address1=3500 Overland Avenue&city=Los Angeles&state=CA&country=US",
+        `https://api.yelp.com/v3/businesses/matches?latitude=${lat}&longitude=${long}&name=${name}&address1=${address1}&city=${city}&state=${state}&country=${country}`,
         {
             headers: {
                 Authorization: `Bearer ${process.env.PALZONE_YELP_TOKEN}`
             }
         }
     );
-    return result.data.businesses[0].id;
+    return result.data.businesses[0].id
 }
 
 async function getYelpData(yelpBusinessId) {
@@ -55,13 +62,13 @@ async function getYelpReviews(yelpBusinessId) {
     return result.data.reviews
 }
 
-async function getOneLocation(name, address1, city, point) {
+async function getOneLocation(name, address1, city, point, zip_code) {
   // return (knex('users').where({id: user_id}).first())
-    const yelpBusinessId = await getYelpBusinessId(name, address1, city, point);
+    const yelpBusinessId = await getYelpBusinessId(name, address1, city, point, zip_code);
     const yelpRating = await getYelpData(yelpBusinessId);
     const yelpReviews = await getYelpReviews(yelpBusinessId);
 
-    return { yelpBusinessId, yelpRating, yelpReviews };
+    return { yelpBusinessId: yelpBusinessId, yelpRating, yelpReviews }
 }
 
 async function getAllLocations(lat, long) {
@@ -119,8 +126,8 @@ async function getAllLocations(lat, long) {
   );
   const cities = cityResults.data.result;
   return cities.map(el => {
-    const { name, address1, city, point } = el;
-    return { name, address1, city, point };
+    const { name, address1, city, point, zip_code } = el;
+    return { name, address1, city, point, zip_code };
   });
 }
 
