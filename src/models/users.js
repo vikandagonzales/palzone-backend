@@ -2,17 +2,19 @@ const knex = require('../../db')
 // const bcrypt = require('bcrypt-as-promised')
 
 function getOneUser(user_id) {
-  return (knex('users').where({id: user_id}).first())
+  return knex("users")
+    .where({ id: user_id })
+    .first();
 }
 
 function getUserByEmail(email) {
-  return (knex('users')
-  .where({email: email})
-  .first())
+  return knex("users")
+    .where({ email: email })
+    .first();
 }
 
 function getAllUsers() {
-  return (knex('users').returning('*'))
+  return knex("users").returning("*");
 }
 
 function createUser(body) {
@@ -48,4 +50,4 @@ module.exports = {
   getUserByEmail,
   getAllUsers,
   createUser
-}
+};
