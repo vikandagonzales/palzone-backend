@@ -17,8 +17,51 @@ const getDistance = (a, b) => {
   return d;
 };
 
-function getOneLocation(location_id) {
+async function getYelpBusinessId(name, address1, city, point) {
+    const result = await axios.get(
+        "https://api.yelp.com/v3/businesses/matches?latitude=34.0246769&longitude=-118.4110162&name=Kogi Taqueria&address1=3500 Overland Avenue&city=Los Angeles&state=CA&country=US",
+        {
+            headers: {
+                Authorization: `Bearer ${process.env.PALZONE_YELP_TOKEN}`
+            }
+        }
+    );
+    return result.data.businesses[0].id;
+}
+
+async function getYelpData(yelpBusinessId) {
+    const result = await axios.get(
+        `https://api.yelp.com/v3/businesses/${yelpBusinessId}`,
+        {
+            headers: {
+                Authorization: `Bearer ${process.env.PALZONE_YELP_TOKEN}`
+            }
+        }
+    );
+    const {rating, review_count} = result.data
+    return {rating, review_count}
+}
+
+
+async function getYelpReviews(yelpBusinessId) {
+    const result = await axios.get(
+        `https://api.yelp.com/v3/businesses/${yelpBusinessId}/reviews`,
+        {
+            headers: {
+                Authorization: `Bearer ${process.env.PALZONE_YELP_TOKEN}`
+            }
+        }
+    );
+    return result.data.reviews
+}
+
+async function getOneLocation(name, address1, city, point) {
   // return (knex('users').where({id: user_id}).first())
+    const yelpBusinessId = await getYelpBusinessId(name, address1, city, point);
+    const yelpRating = await getYelpData(yelpBusinessId);
+    const yelpReviews = await getYelpReviews(yelpBusinessId);
+
+    return { yelpBusinessId, yelpRating, yelpReviews };
 }
 
 async function getAllLocations(lat, long) {

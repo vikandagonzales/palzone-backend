@@ -1,11 +1,9 @@
 const locationModel = require("../models/locations");
 
 function getOneLocation(req, res, next) {
-  if (!req.params.location_id) {
-    return next({ status: 400, message: "No user id" });
-  }
+  const { name, address1, city, point } = req.params;
   locationModel
-    .getOneLocation(req.params.location_id)
+    .getOneLocation(name, address1, city, point)
     .then(data => {
       res.status(200).send({ data });
     })
