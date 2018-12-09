@@ -176,7 +176,7 @@ async function getAllLocations(lat, long) {
   const closestCity = sortedCities[0].city;
 
   const cityResults = await axios.get(
-    `https://api.discover.com/cityguides/v2/merchants?merchant_city=${closestCity}&merchant_category=hotels`,
+    `https://api.discover.com/cityguides/v2/merchants?merchant_city=${closestCity}`,
     {
       headers: {
         "x-dfs-api-plan": "CITYGUIDES_SANDBOX",
@@ -186,8 +186,8 @@ async function getAllLocations(lat, long) {
   );
   const cities = cityResults.data.result;
   return cities.map(el => {
-    const { name, address1, city, point, zip_code } = el;
-    return { name, address1, city, point, zip_code };
+    const { name, address1, city, point, zip_code, mcc } = el;
+    return { name, address1, city, point, zip_code, mcc };
   });
 }
 
