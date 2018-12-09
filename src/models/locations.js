@@ -21,9 +21,7 @@ const getDistance = (a, b) => {
 async function getYelpBusinessId(name, address1, city, point, zip_code) {
     const zipcodeMetadata = zipcodes.lookup(zip_code);
     const {state, country} = zipcodeMetadata;
-
     const [lat, long] = JSON.parse(point);
-    console.log(lat, long);
 
     const result = await axios.get(
         `https://api.yelp.com/v3/businesses/matches?latitude=${lat}&longitude=${long}&name=${name}&address1=${address1}&city=${city}&state=${state}&country=${country}`,
@@ -62,13 +60,29 @@ async function getYelpReviews(yelpBusinessId) {
     return result.data.reviews
 }
 
+async function googleBusinessId(name) {
+    const googleSearch = await axios.get(
+        `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?parameters&key=${process.env.PALZONE_GOOGLE_TOKEN}&input=${name}&inputtype=textquery`,
+    );
+   return googleSearch.data.candidates[0].place_id
+}
+
+async function googleReviews(placeId){
+    const googleReviewList = await axios.get(
+        `https://maps.googleapis.com/maps/api/place/details/json?parameters&key=${process.env.PALZONE_GOOGLE_TOKEN}&place_id=${placeId}`
+    );
+    const {rating, reviews} =  googleReviewList.data.result
+    return {rating, reviews}
+}
+
 async function getOneLocation(name, address1, city, point, zip_code) {
-  // return (knex('users').where({id: user_id}).first())
     const yelpBusinessId = await getYelpBusinessId(name, address1, city, point, zip_code);
     const yelpRating = await getYelpData(yelpBusinessId);
     const yelpReviews = await getYelpReviews(yelpBusinessId);
 
-    return { yelpBusinessId: yelpBusinessId, yelpRating, yelpReviews }
+    const googleId = await googleBusinessId(name)
+    const {rating, reviews} = await googleReviews(googleId)
+    return { yelpBusinessId, yelpRating, yelpReviews, googleRating: rating, googleReviews: reviews}
 }
 
 async function getAllLocations(lat, long) {
@@ -116,7 +130,7 @@ async function getAllLocations(lat, long) {
   const closestCity = sortedCities[0].city;
 
   const cityResults = await axios.get(
-    `https://api.discover.com/cityguides/v2/merchants?merchant_city=${closestCity}&merchant_category=restaurants`,
+    `https://api.discover.com/cityguides/v2/merchants?merchant_city=${closestCity}&merchant_category=hotels`,
     {
       headers: {
         "x-dfs-api-plan": "CITYGUIDES_SANDBOX",
