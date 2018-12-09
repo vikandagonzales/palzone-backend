@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/vikandagonzales/palzone-backend#readme",
   "dependencies": {
+    "axios": "^0.18.0",
     "bcrypt-as-promised": "^1.1.0",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
