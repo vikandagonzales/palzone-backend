@@ -1,24 +1,16 @@
 const axios = require("axios");
 const zipcodes = require('zipcodes');
-const {codes} = require('iso-country-codes');
-
-console.log(codes.find(code => code.alpha2 === 'US').numeric)
-
+const geolib = require('geolib');
 
 const getDistance = (a, b) => {
   if (!(a && b)) return 0;
   if (!(a.lat && a.long && b.lat && b.long)) return 0;
-  const R = 6371000; // metres
-  const φ1 = a.lat * (Math.PI / 180);
-  const φ2 = b.lat * (Math.PI / 180);
-  const Δφ = φ2 - φ1;
-  const Δλ = (b.long - a.long) * (Math.PI / 180);
-  const α =
-    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-  const c = 2 * Math.atan2(Math.sqrt(α), Math.sqrt(1 - α));
-  const d = R * c;
-  return d;
+    a.latitude = a.lat;
+    a.longitude = a.long;
+    b.latitude = b.lat;
+    b.longitude = b.long;
+
+  return geolib.getDistance(a,b);
 };
 
 async function getYelpBusinessId(name, address1, city, point, zip_code) {
