@@ -12,6 +12,17 @@ async function createTranslate(req, res, next) {
   }
 }
 
+async function getLanguageList(req, res, next) {
+  try {
+    const response = await translateModel.getLanguageList()
+
+    res.status(200).json({ response })
+  } catch (err) {
+    next(err)
+  }
+}
+
 module.exports = {
-  createTranslate
+  createTranslate,
+  getLanguageList
 };
