@@ -1,5 +1,5 @@
 const knex = require('../../db')
-const bcrypt = require('bcrypt-as-promised')
+// const bcrypt = require('bcrypt-as-promised')
 
 function getOneUser(user_id) {
   return (knex('users').where({id: user_id}).first())
@@ -30,7 +30,8 @@ function createUser(body) {
       last_name: body.last_name,
       email: body.email,
       password: new_password,
-      photo: body.photo
+      photo: body.photo,
+      preferred_language: body.preferred_language
     }).returning('*'))
   }).then(function([
     {
