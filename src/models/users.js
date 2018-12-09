@@ -30,7 +30,8 @@ function createUser(body) {
       last_name: body.last_name,
       email: body.email,
       password: new_password,
-      photo: body.photo
+      photo: body.photo,
+      preferred_language: body.preferred_language
     }).returning('*'))
   }).then(function([
     {
