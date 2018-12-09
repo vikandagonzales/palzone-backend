@@ -16,9 +16,11 @@ app.use(bodyParser.json());
 // USER ROUTES
 //////////////////////////////////////////////////////////////////////////////
 
-app.use("/users", require("./routes/users"));
-app.use("/auth", require("./routes/auth"));
-app.use("/locations", require("./routes/locations"));
+app.use('/users', require('./routes/users'))
+app.use('/auth', require('./routes/auth'))
+app.use('/locations', require('./routes/locations'))
+app.use('/translate', require('./routes/translate'))
+
 
 app.get("/healthcheck", function(req, res) {
   res.setHeader("Content-Type", "application/json");
